@@ -9,7 +9,7 @@ public interface UserRepository {
 
     List<User> findAll();
 
-    UserDto save(User user);
+    User save(User user);
 
     User findById(long id);
 

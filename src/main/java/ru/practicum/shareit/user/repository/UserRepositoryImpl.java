@@ -24,11 +24,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public UserDto save(User user) {
+    public User save(User user) {
         checkDuplicateEmail(user);
         user.setId(++id);
         users.put(user.getId(), user);
-        return UserMapper.mapToUserDto(user);
+        return user;
     }
 
     @Override
