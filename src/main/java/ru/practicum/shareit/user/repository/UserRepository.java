@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserRepository {
 
-    List<UserDto> findAll();
+    List<User> findAll();
 
     UserDto save(User user);
 

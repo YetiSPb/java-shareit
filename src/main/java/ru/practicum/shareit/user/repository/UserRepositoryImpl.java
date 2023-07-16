@@ -19,9 +19,8 @@ public class UserRepositoryImpl implements UserRepository {
     private long id = 0;
 
     @Override
-    public List<UserDto> findAll() {
-        return users.values().stream().map(UserMapper::mapToUserDto)
-                .collect(Collectors.toList());
+    public List<User> findAll() {
+        return users.values().stream().collect(Collectors.toList());
     }
 
     @Override
