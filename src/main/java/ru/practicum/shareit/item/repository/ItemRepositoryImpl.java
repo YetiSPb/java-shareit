@@ -42,11 +42,9 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<ItemDto> findAllItems(Long userId) {
-        return items.values().stream()
-                .filter(item -> item.getOwner().getId() == userId)
-                .map(ItemMapper::mapToItemDto)
-                .collect(Collectors.toList());
+    public List<Item> findAllItems(Long userId) {
+        return  items.values().stream()
+                .filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
     }
 
     @Override

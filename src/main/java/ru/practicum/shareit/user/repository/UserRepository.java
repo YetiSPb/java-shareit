@@ -16,4 +16,6 @@ public interface UserRepository {
     UserDto partialUpdateUser(User user, User userToPatch);
 
     void deleteUser(User user);
+
+    void checkUserId(Long userId);
 }

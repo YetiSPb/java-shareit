@@ -13,7 +13,7 @@ public interface ItemRepository {
 
     ItemDto partialUpdateItem(Map<String, Object> updates, Item itemOld);
 
-    List<ItemDto> findAllItems(Long userId);
+    List<Item> findAllItems(Long userId);
 
     List<ItemDto> searchItems(String text, Long userId);
 }

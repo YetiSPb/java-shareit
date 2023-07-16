@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -34,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto partialUpdateItem(Map<String, Object> updates, long itemId, long userId) {
-        checkUserId(userId);
+        userRepository.checkUserId(userId);
         Item item = itemRepository.findById(itemId);
         if (item.getOwner().getId() != userId) {
             throw new DataNotFoundException("У пользователя по id " + userId + " нет такой вещи по id " + item.getId());
@@ -44,24 +45,22 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto findById(long itemId, long userId) {
-        checkUserId(userId);
+        userRepository.checkUserId(userId);
         Item item = itemRepository.findById(itemId);
         return ItemMapper.mapToItemDto(item);
     }
 
     @Override
     public List<ItemDto> findAllItems(Long userId) {
-        checkUserId(userId);
-        return itemRepository.findAllItems(userId);
+        userRepository.checkUserId(userId);
+        return itemRepository.findAllItems(userId).stream().map(ItemMapper::mapToItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ItemDto> searchItems(String text, Long userId) {
-        checkUserId(userId);
+        userRepository.checkUserId(userId);
         return itemRepository.searchItems(text, userId);
     }
 
-    private void checkUserId(Long userId) {
-        userRepository.findById(userId);
-    }
 }

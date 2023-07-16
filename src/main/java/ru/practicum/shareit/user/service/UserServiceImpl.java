@@ -35,9 +35,6 @@ public class UserServiceImpl implements UserService {
     public UserDto partialUpdateUser(UserDto userDto, long id) {
         User userToPatch = userRepository.findById(id);
         User user = UserMapper.mapToUser(userDto);
-        if (userToPatch.getEmail().equals(user.getEmail())) {
-            return UserMapper.mapToUserDto(userToPatch);
-        }
         return userRepository.partialUpdateUser(user, userToPatch);
     }
 
@@ -46,4 +43,5 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id);
         userRepository.deleteUser(user);
     }
+
 }

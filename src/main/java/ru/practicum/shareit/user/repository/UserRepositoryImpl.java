@@ -59,7 +59,9 @@ public class UserRepositoryImpl implements UserRepository {
             userPatched.setName(user.getName());
         }
         if (user.getEmail() != null) {
-            checkDuplicateEmail(user);
+            if (!userPatched.getEmail().equals(user.getEmail())) {
+                checkDuplicateEmail(user);
+            }
             userPatched.setEmail(user.getEmail());
         }
     }
@@ -70,5 +72,10 @@ public class UserRepositoryImpl implements UserRepository {
                 throw new DataConflictException("Пользователь с таким email уже есть в базе");
             }
         }
+    }
+
+    @Override
+    public void checkUserId(Long userId) {
+        findById(userId);
     }
 }
