@@ -34,9 +34,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto partialUpdateUser(UserDto userDto, long id) {
-        User userToPatch = userRepository.findById(id);
-        User user = UserMapper.mapToUser(userDto);
-        return userRepository.partialUpdateUser(user, userToPatch);
+        User user = userRepository.findById(id);
+        User userUpdate = UserMapper.mapToUser(userDto);
+
+        if (userUpdate.getName() != null) {
+            user.setName(userUpdate.getName());
+        }
+
+        if (userUpdate.getEmail() != null) {
+            if (!user.getEmail().equals(userUpdate.getEmail())) {
+                userRepository.checkDuplicateEmail(userUpdate.getEmail());
+            }
+            user.setEmail(userUpdate.getEmail());
+        }
+
+        return UserMapper.mapToUserDto(userRepository.partialUpdateUser(user));
     }
 
     @Override

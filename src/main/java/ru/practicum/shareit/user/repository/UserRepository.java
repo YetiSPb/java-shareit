@@ -13,9 +13,11 @@ public interface UserRepository {
 
     User findById(long id);
 
-    UserDto partialUpdateUser(User user, User userToPatch);
+    User partialUpdateUser(User user);
 
     void deleteUser(User user);
 
     void checkUserId(Long userId);
+
+    void checkDuplicateEmail(String userEmail);
 }

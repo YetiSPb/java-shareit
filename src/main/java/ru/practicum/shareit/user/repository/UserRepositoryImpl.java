@@ -3,8 +3,6 @@ package ru.practicum.shareit.user.repository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.DataConflictException;
 import ru.practicum.shareit.exception.DataNotFoundException;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
@@ -25,7 +23,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        checkDuplicateEmail(user);
+        checkDuplicateEmail(user.getEmail());
         user.setId(++id);
         users.put(user.getId(), user);
         return user;
@@ -43,9 +41,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public UserDto partialUpdateUser(User user, User userToPatch) {
-        patchUser(userToPatch, user);
-        return UserMapper.mapToUserDto(userToPatch);
+    public User partialUpdateUser(User user) {
+        users.put(user.getId(), user);
+        return users.get(user.getId());
     }
 
     @Override
@@ -53,21 +51,10 @@ public class UserRepositoryImpl implements UserRepository {
         users.remove(user.getId());
     }
 
-    private void patchUser(User userPatched, User user) {
-        if (user.getName() != null) {
-            userPatched.setName(user.getName());
-        }
-        if (user.getEmail() != null) {
-            if (!userPatched.getEmail().equals(user.getEmail())) {
-                checkDuplicateEmail(user);
-            }
-            userPatched.setEmail(user.getEmail());
-        }
-    }
-
-    private void checkDuplicateEmail(User user) {
+    @Override
+    public void checkDuplicateEmail(String userEmail) {
         for (User u : users.values()) {
-            if (u.getEmail().equals(user.getEmail())) {
+            if (u.getEmail().equals(userEmail)) {
                 throw new DataConflictException("Пользователь с таким email уже есть в базе");
             }
         }
