@@ -36,13 +36,14 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public ItemDto partialUpdateItem(Map<String, Object> updates, Item itemOld) {
-        return ItemMapper.mapToItemDto(itemOld);
+    public ItemDto partialUpdateItem(Item item) {
+        items.put(item.getId(), item);
+        return ItemMapper.mapToItemDto(items.get(item.getId()));
     }
 
     @Override
     public List<Item> findAllItems(Long userId) {
-        return  items.values().stream()
+        return items.values().stream()
                 .filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
     }
 

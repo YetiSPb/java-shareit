@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -33,7 +35,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDto partialUpdateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @RequestBody Map<String, Object> updates,
+                                     @RequestBody ItemDto updates,
                                      @PathVariable(required = false) Long itemId) {
         log.debug("Получен запрос PATCH на обновление вещи по id {}", itemId);
         return itemService.partialUpdateItem(updates, itemId, userId);

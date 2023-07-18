@@ -11,7 +11,7 @@ public interface ItemRepository {
 
     Item findById(long itemId);
 
-    ItemDto partialUpdateItem(Map<String, Object> updates, Item itemOld);
+    ItemDto partialUpdateItem(Item updates);
 
     List<Item> findAllItems(Long userId);
 

@@ -11,7 +11,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,28 +33,24 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto partialUpdateItem(Map<String, Object> updates, long itemId, long userId) {
+    public ItemDto partialUpdateItem(ItemDto updates, long itemId, long userId) {
         userRepository.checkUserId(userId);
         Item item = itemRepository.findById(itemId);
         if (item.getOwner().getId() != userId) {
             throw new DataNotFoundException("У пользователя по id " + userId + " нет такой вещи по id " + item.getId());
         }
 
-        for (String s : updates.keySet()) {
-            switch (s) {
-                case "name":
-                    item.setName((String) updates.get(s));
-                    break;
-                case "description":
-                    item.setDescription((String) updates.get(s));
-                    break;
-                case "available":
-                    item.setAvailable((Boolean) updates.get(s));
-                    break;
-            }
+        if (updates.getName() != null) {
+            item.setName(updates.getName());
+        }
+        if (updates.getDescription() != null) {
+            item.setDescription(updates.getDescription());
+        }
+        if ((updates.getAvailable() != null)) {
+            item.setAvailable(updates.getAvailable());
         }
 
-        return itemRepository.partialUpdateItem(updates, item);
+        return itemRepository.partialUpdateItem(item);
     }
 
     @Override

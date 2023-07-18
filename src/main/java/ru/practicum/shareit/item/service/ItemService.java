@@ -8,7 +8,7 @@ import java.util.Map;
 public interface ItemService {
     ItemDto saveItem(ItemDto itemDto, Long userId);
 
-    ItemDto partialUpdateItem(Map<String, Object> updates, long itemId, long userId);
+    ItemDto partialUpdateItem(ItemDto updates, long itemId, long userId);
 
     ItemDto findById(long itemId, long userId);
 
