@@ -18,10 +18,10 @@ public class ItemRepositoryImpl implements ItemRepository {
     private long id = 0;
 
     @Override
-    public ItemDto save(Item item) {
+    public Item save(Item item) {
         item.setId(++id);
         items.put(item.getId(), item);
-        return ItemMapper.mapToItemDto(item);
+        return item;
     }
 
     @Override
@@ -36,9 +36,9 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public ItemDto partialUpdateItem(Item item) {
+    public Item partialUpdateItem(Item item) {
         items.put(item.getId(), item);
-        return ItemMapper.mapToItemDto(items.get(item.getId()));
+        return items.get(item.getId());
     }
 
     @Override

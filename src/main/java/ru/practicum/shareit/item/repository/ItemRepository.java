@@ -6,11 +6,11 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 public interface ItemRepository {
-    ItemDto save(Item item);
+    Item save(Item item);
 
     Item findById(long itemId);
 
-    ItemDto partialUpdateItem(Item updates);
+    Item partialUpdateItem(Item updates);
 
     List<Item> findAllItems(Long userId);
 

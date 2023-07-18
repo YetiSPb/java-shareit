@@ -29,7 +29,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto saveItem(ItemDto itemDto, Long userId) {
         User user = userRepository.findById(userId);
         Item item = ItemMapper.mapToItem(itemDto, user);
-        return itemRepository.save(item);
+        return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
             item.setAvailable(updates.getAvailable());
         }
 
-        return itemRepository.partialUpdateItem(item);
+        return ItemMapper.mapToItemDto(itemRepository.partialUpdateItem(item));
     }
 
     @Override
