@@ -40,6 +40,21 @@ public class ItemServiceImpl implements ItemService {
         if (item.getOwner().getId() != userId) {
             throw new DataNotFoundException("У пользователя по id " + userId + " нет такой вещи по id " + item.getId());
         }
+
+        for (String s : updates.keySet()) {
+            switch (s) {
+                case "name":
+                    item.setName((String) updates.get(s));
+                    break;
+                case "description":
+                    item.setDescription((String) updates.get(s));
+                    break;
+                case "available":
+                    item.setAvailable((Boolean) updates.get(s));
+                    break;
+            }
+        }
+
         return itemRepository.partialUpdateItem(updates, item);
     }
 

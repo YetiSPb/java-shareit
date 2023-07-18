@@ -37,7 +37,6 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public ItemDto partialUpdateItem(Map<String, Object> updates, Item itemOld) {
-        patchItem(updates, itemOld);
         return ItemMapper.mapToItemDto(itemOld);
     }
 
@@ -57,19 +56,5 @@ public class ItemRepositoryImpl implements ItemRepository {
                 .collect(Collectors.toList());
     }
 
-    private void patchItem(Map<String, Object> updates, Item itemOld) {
-        for (String s : updates.keySet()) {
-            switch (s) {
-                case "name":
-                    itemOld.setName((String) updates.get(s));
-                    break;
-                case "description":
-                    itemOld.setDescription((String) updates.get(s));
-                    break;
-                case "available":
-                    itemOld.setAvailable((Boolean) updates.get(s));
-                    break;
-            }
-        }
-    }
+
 }
