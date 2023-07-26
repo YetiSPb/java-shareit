@@ -7,11 +7,11 @@ import java.util.List;
 public interface UserService {
     List<UserDto> getAllUsers();
 
-    UserDto saveUser(UserDto userDto);
+    UserDto save(UserDto userDto);
 
     UserDto findById(long id);
 
-    UserDto partialUpdateUser(UserDto userDto, long id);
+    UserDto updateUser(UserDto userDto, long id);
 
     void deleteUser(long id);
 

@@ -10,7 +10,7 @@ public interface ItemRepository {
 
     Item findById(long itemId);
 
-    Item partialUpdateItem(Item updates);
+    Item updateItem(Item updates);
 
     List<Item> findAllItems(Long userId);
 

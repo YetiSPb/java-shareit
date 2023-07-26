@@ -2,12 +2,14 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.DataNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,20 +23,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto saveUser(UserDto userDto) {
+    public UserDto save(UserDto userDto) {
         User user = UserMapper.mapToUser(userDto);
         return UserMapper.mapToUserDto(userRepository.save(user));
     }
 
     @Override
     public UserDto findById(long id) {
-        User user = userRepository.findById(id);
-        return UserMapper.mapToUserDto(user);
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new DataNotFoundException();
+        }
+        return UserMapper.mapToUserDto(user.get());
     }
 
     @Override
-    public UserDto partialUpdateUser(UserDto userDto, long id) {
-        User user = userRepository.findById(id);
+    public UserDto updateUser(UserDto userDto, long id) {
+        User user = userRepository.getById(id);
         User userUpdate = UserMapper.mapToUser(userDto);
 
         if (userUpdate.getName() != null) {
@@ -48,13 +53,11 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userUpdate.getEmail());
         }
 
-        return UserMapper.mapToUserDto(userRepository.partialUpdateUser(user));
+        return UserMapper.mapToUserDto(userRepository.save(user));
     }
 
     @Override
     public void deleteUser(long id) {
-        User user = userRepository.findById(id);
-        userRepository.deleteUser(user);
+        userRepository.deleteById(id);
     }
-
 }

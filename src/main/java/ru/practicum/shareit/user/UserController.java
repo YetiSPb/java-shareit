@@ -36,14 +36,14 @@ public class UserController {
     @PostMapping()
     public UserDto saveUser(@Valid @RequestBody UserDto userDto) {
         log.debug("Получен запрос POST на создание пользователя {}", userDto.toString());
-        return userService.saveUser(userDto);
+        return userService.save(userDto);
     }
 
     @PatchMapping("/{id}")
-    public UserDto partialUpdateUser(@RequestBody UserDto userDto,
-                                     @PathVariable(required = false) long id) {
+    public UserDto updateUser(@RequestBody UserDto userDto,
+                              @PathVariable(required = false) long id) {
         log.debug("Получен запрос PATCH на обновление пользователя по id {}", id);
-        return userService.partialUpdateUser(userDto, id);
+        return userService.updateUser(userDto, id);
     }
 
     @DeleteMapping("/{id}")

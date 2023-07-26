@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Repository
@@ -36,7 +37,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Item partialUpdateItem(Item item) {
+    public Item updateItem(Item item) {
         items.put(item.getId(), item);
         return items.get(item.getId());
     }
@@ -44,7 +45,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public List<Item> findAllItems(Long userId) {
         return items.values().stream()
-                .filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
+                .filter(item -> Objects.equals(item.getOwner().getId(), userId)).collect(Collectors.toList());
     }
 
     @Override

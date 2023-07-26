@@ -31,9 +31,9 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto partialUpdateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @RequestBody ItemDto updates,
-                                     @PathVariable(required = false) Long itemId) {
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                              @RequestBody ItemDto updates,
+                              @PathVariable(required = false) Long itemId) {
         log.debug("Получен запрос PATCH на обновление вещи по id {}", itemId);
         return itemService.partialUpdateItem(updates, itemId, userId);
     }
