@@ -9,12 +9,12 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
 
     @Override
@@ -30,16 +30,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findById(long id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new DataNotFoundException();
-        }
-        return UserMapper.mapToUserDto(user.get());
+        User user=userRepository.findById(id).orElseThrow(DataNotFoundException::new);
+        return UserMapper.mapToUserDto(user);
     }
 
     @Override
     public UserDto updateUser(UserDto userDto, long id) {
-        User user = userRepository.getById(id);
+        User user = userRepository.findById(id).orElseThrow(DataNotFoundException::new);
+
         User userUpdate = UserMapper.mapToUser(userDto);
 
         if (userUpdate.getName() != null) {
@@ -60,4 +58,5 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(long id) {
         userRepository.deleteById(id);
     }
+
 }

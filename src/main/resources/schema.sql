@@ -18,7 +18,7 @@ create table if not exists items
     description VARCHAR(255) not null,
     owner_id    BIGINT       not null constraint item_users_id_fk references users on update cascade on delete cascade,
     request_id  BIGINT,
-    available   BIGINT
+    available   BOOLEAN
 );
 
 

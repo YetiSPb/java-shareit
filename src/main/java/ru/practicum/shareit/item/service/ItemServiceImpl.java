@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DataNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -14,28 +14,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
-    @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository) {
-        this.itemRepository = itemRepository;
-        this.userRepository = userRepository;
-    }
-
     @Override
     public ItemDto saveItem(ItemDto itemDto, Long userId) {
-        User user = userRepository.getById(userId);
+        User user = userRepository.findById(userId).orElseThrow(DataNotFoundException::new);
         Item item = ItemMapper.mapToItem(itemDto, user);
         return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
 
     @Override
-    public ItemDto partialUpdateItem(ItemDto updates, long itemId, long userId) {
-        userRepository.getById(userId);
-        Item item = itemRepository.findById(itemId);
+    public ItemDto updateItem(ItemDto updates, long itemId, long userId) {
+        userRepository.findById(userId).orElseThrow(DataNotFoundException::new);
+        Item item = itemRepository.findById(itemId).orElseThrow(DataNotFoundException::new);
+
         if (item.getOwner().getId() != userId) {
             throw new DataNotFoundException("У пользователя по id " + userId + " нет такой вещи по id " + item.getId());
         }
@@ -50,27 +46,34 @@ public class ItemServiceImpl implements ItemService {
             item.setAvailable(updates.getAvailable());
         }
 
-        return ItemMapper.mapToItemDto(itemRepository.updateItem(item));
+        return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
 
     @Override
     public ItemDto findById(long itemId, long userId) {
-        userRepository.getById(userId);
-        Item item = itemRepository.findById(itemId);
+        userRepository.findById(userId).orElseThrow(DataNotFoundException::new);
+        Item item = itemRepository.findById(itemId).orElseThrow(DataNotFoundException::new);
         return ItemMapper.mapToItemDto(item);
     }
 
     @Override
     public List<ItemDto> findAllItems(Long userId) {
-        userRepository.getById(userId);
-        return itemRepository.findAllItems(userId).stream().map(ItemMapper::mapToItemDto)
+        return itemRepository.findByOwner_Id(userId).stream().map(ItemMapper::mapToItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemDto> searchItems(String text, Long userId) {
-        userRepository.getById(userId);
-        return itemRepository.searchItems(text, userId);
+    public List<ItemDto> searchItems(String text,  Boolean accept) {
+        List<Item> users;
+        if (Boolean.TRUE.equals(accept)) {
+            users = itemRepository
+                    .findByDescriptionContainingIgnoreCaseAndAvailable(text, true)
+                    .orElseThrow(DataNotFoundException::new);
+        } else {
+            users = itemRepository.findByDescriptionContainingIgnoreCase(text)
+                    .orElseThrow(DataNotFoundException::new);
+        }
+        return users.stream().map(ItemMapper::mapToItemDto).collect(Collectors.toList());
     }
 
 }

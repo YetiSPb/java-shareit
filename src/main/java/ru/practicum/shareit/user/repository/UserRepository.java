@@ -9,4 +9,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.email like ?1")
     void checkDuplicateEmail(String email);
+
 }
