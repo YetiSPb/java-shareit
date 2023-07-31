@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findById(long id) {
-        User user=userRepository.findById(id).orElseThrow(DataNotFoundException::new);
+        User user = userRepository.findById(id).orElseThrow(DataNotFoundException::new);
         return UserMapper.mapToUserDto(user);
     }
 

@@ -1,44 +1,65 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
-@Entity
 @Getter
 @Setter
 @ToString
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name = "items")
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "description", nullable = false)
     private String description;
-    @OneToOne
-    private User owner;
-    private long requestId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "users_items",
+            joinColumns = {@JoinColumn(name = "item_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
+    )
+    @ToString.Exclude
+    private User user;
+
+    @Column(name = "available", nullable = false)
     private boolean available;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "items_comments",
+            joinColumns = {@JoinColumn(name = "item_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "comment_id", referencedColumnName = "id")}
+    )
+    @ToString.Exclude
+    private List<Comment> comments;
+
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return getId() != null && Objects.equals(getId(), item.getId());
+        return id == item.id && available == item.available
+                && Objects.equals(name, item.name)
+                && Objects.equals(description, item.description)
+                && Objects.equals(user, item.user);
     }
 
     @Override
-    public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    public int hashCode() {
+        return Objects.hash(id, name, description, user, available);
     }
 }
