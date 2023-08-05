@@ -51,9 +51,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @RequestParam String text
-            , @RequestHeader(value = "Accept", required = false) Optional<String> accept) {
+    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam String text, @RequestHeader(value = "Accept", required = false) Optional<String> accept) {
         log.debug("Получен запрос GET на поиск вещей от пользователя по id {}", userId);
         if (text.equals("")) {
             return new ArrayList<>();
