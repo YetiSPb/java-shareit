@@ -51,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = checkBookingId(bookingId);
         long itemId = booking.getItem().getId();
 
-        List<Item> items = itemRepository.findByUser_Id(userId); 
+        List<Item> items = itemRepository.findByUser_Id(userId);
 
         if (!checkIfUserIsOwner(items, itemId)) {
             throw new DataNotFoundException("Пользователь с id " + userId + " не владелей вещи по id " + itemId);
@@ -72,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
         checkUserId(userId);
         Booking booking = checkBookingId(bookingId);
         long itemId = booking.getItem().getId();
-        List<Item> items = itemRepository.findByUser_Id(userId); 
+        List<Item> items = itemRepository.findByUser_Id(userId);
         if (!checkIfUserIsOwner(items, itemId) && userId != booking.getBooker().getId()) {
             throw new DataNotFoundException("Пользователь с id " + userId + " не владелей или не бронировал " +
                     "вещь по id " + itemId);
@@ -117,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> findAllBookingsByOwner(Long userId, BookingState state) {
         checkUserId(userId);
-        List<Item> items = itemRepository.findByUser_Id(userId); 
+        List<Item> items = itemRepository.findByUser_Id(userId);
         switch (state) {
             case ALL:
                 return bookingRepository.findAllByItemInOrderByOrderedOnDesc(items)
