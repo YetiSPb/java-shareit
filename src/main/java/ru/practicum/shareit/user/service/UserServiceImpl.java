@@ -16,29 +16,30 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream().map(UserMapper::mapToUserDto).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(userMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public UserDto save(UserDto userDto) {
-        User user = UserMapper.mapToUser(userDto);
-        return UserMapper.mapToUserDto(userRepository.save(user));
+        User user = userMapper.toModel(userDto);
+        return userMapper.toDTO(userRepository.save(user));
     }
 
     @Override
     public UserDto findById(long id) {
         User user = userRepository.findById(id).orElseThrow(DataNotFoundException::new);
-        return UserMapper.mapToUserDto(user);
+        return userMapper.toDTO(user);
     }
 
     @Override
     public UserDto updateUser(UserDto userDto, long id) {
         User user = userRepository.findById(id).orElseThrow(DataNotFoundException::new);
 
-        User userUpdate = UserMapper.mapToUser(userDto);
+        User userUpdate = userMapper.toModel(userDto);
 
         if (userUpdate.getName() != null) {
             user.setName(userUpdate.getName());
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userUpdate.getEmail());
         }
 
-        return UserMapper.mapToUserDto(userRepository.save(user));
+        return userMapper.toDTO(userRepository.save(user));
     }
 
     @Override
