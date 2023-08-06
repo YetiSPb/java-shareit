@@ -42,7 +42,7 @@ public class Booking {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Booking booking = (Booking) o;
-        return Objects.equals(id, booking.id) && Objects.equals(booker, booking.booker) && Objects.equals(item, booking.item) && Objects.equals(orderedOn, booking.orderedOn) && Objects.equals(returnedOn, booking.returnedOn) && status == booking.status;
+        return id == booking.id && Objects.equals(booker, booking.booker) && Objects.equals(item, booking.item) && Objects.equals(orderedOn, booking.orderedOn) && Objects.equals(returnedOn, booking.returnedOn) && status == booking.status;
     }
 
     @Override

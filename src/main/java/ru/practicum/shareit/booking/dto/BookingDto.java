@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Data;
 import ru.practicum.shareit.booking.model.Status;
 
@@ -33,7 +32,6 @@ public class BookingDto {
 
     private Status status;
 
-    @JsonCreator
     public BookingDto(long id, LocalDateTime start, LocalDateTime end) {
         this.id = id;
         this.start = start;
