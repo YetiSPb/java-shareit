@@ -78,7 +78,7 @@ public class ItemServiceImpl implements ItemService {
         List<CommentDto> commentDtos = comments.stream().map(commentMapper::toDTO).collect(Collectors.toList());
         itemForUserDto.setComments(commentDtos);
 
-        if (checkIfUserIsOwner(userId, item)) {
+        if (Boolean.TRUE.equals(checkIfUserIsOwner(userId, item))) {
             return findByIdForUser(item, commentDtos);
         } else {
             return itemForUserDto;
@@ -99,18 +99,18 @@ public class ItemServiceImpl implements ItemService {
             i1.setComments(commentDtos);
             return i1;
         } else {
-            Booking b1 = bookings.get(0); // берем минимальный
-            Booking b2 = bookings.get(bookings.size() - 1); // и максимальный
+            Booking b1 = bookings.get(0);
+            Booking b2 = bookings.get(bookings.size() - 1);
 
             for (Booking booking : bookings) {
                 if (booking.getReturnedOn().isBefore(now)) {
-                    if (booking.getReturnedOn().isAfter(b1.getReturnedOn())) { // если он до наст времени, но позже минимального
-                        b1 = booking; // это будет наш ласт
+                    if (booking.getReturnedOn().isAfter(b1.getReturnedOn())) {
+                        b1 = booking;
                     }
                 }
                 if (booking.getOrderedOn().isAfter(now)) {
                     if (booking.getReturnedOn().isBefore(b2.getReturnedOn())) {
-                        b2 = booking; // наш некст
+                        b2 = booking;
                     }
                 }
             }
@@ -166,7 +166,7 @@ public class ItemServiceImpl implements ItemService {
                     " не брал в аренду вещь по id " + itemId);
         }
 
-        if (bookings.get(0).getReturnedOn().isAfter(now)) { // если у последней аренды срок еще не вышел
+        if (bookings.get(0).getReturnedOn().isAfter(now)) {
             throw new ValidationException("Пользователь с id " + userId +
                     " еще не вернул из аренды вещь по id " + itemId);
         }
