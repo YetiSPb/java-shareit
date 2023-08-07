@@ -3,7 +3,7 @@ package ru.practicum.shareit.booking.dto;
 import lombok.Data;
 import ru.practicum.shareit.booking.model.Status;
 
-import javax.persistence.Column;
+
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -19,12 +19,10 @@ public class BookingDto {
 
     @NotNull(message = "Дата начала аренды не может быть пустой")
     @FutureOrPresent
-    @Column(name = "start_date")
     private LocalDateTime start;
 
     @NotNull(message = "Дата конца аренды не может быть пустой")
     @FutureOrPresent
-    @Column(name = "end_date")
     private LocalDateTime end;
 
     private BookerDto booker;

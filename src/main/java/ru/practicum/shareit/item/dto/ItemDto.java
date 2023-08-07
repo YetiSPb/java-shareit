@@ -4,6 +4,7 @@ import lombok.Data;
 import ru.practicum.shareit.item.model.Comment;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ public class ItemDto {
     @Size(max = 200, message = "Описание не должно превышать 200 символов")
     private String description;
 
+    @NotNull(message = "Необходимо указать статус доступности вещи для аренды")
     private Boolean available;
 
     private Set<Comment> comments;
