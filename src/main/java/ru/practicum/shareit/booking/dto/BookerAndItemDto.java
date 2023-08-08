@@ -6,4 +6,5 @@ import lombok.Data;
 public class BookerAndItemDto {
     private long id;
     private long bookerId;
+
 }
