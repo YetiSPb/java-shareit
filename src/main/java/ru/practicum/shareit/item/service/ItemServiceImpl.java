@@ -88,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
     private ItemForUserDto findByIdForUser(Item item, List<CommentDto> commentDtos) {
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByReturnedOnAsc(item, Status.APPROVED);
-        if (bookings == null || bookings.size() == 0) {
+        if (bookings.isEmpty()) {
             ItemForUserDto i1 = itemMapper.toItemForUserDto(item, null, null);
             i1.setComments(commentDtos);
             return i1;
