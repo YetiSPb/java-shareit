@@ -161,7 +161,7 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> bookings = bookingRepository.findByBookerIdAndItemIdAndReturnedOnBeforeOrderByReturnedOnDesc(userId,
                 itemId, now);
 
-        if (bookings == null || bookings.size() == 0) {
+        if (bookings.isEmpty()) {
             throw new ValidationException("Пользователь с id " + userId +
                     " не брал в аренду вещь по id " + itemId);
         }

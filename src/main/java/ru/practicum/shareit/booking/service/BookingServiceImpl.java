@@ -32,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto addBooking(long userId, BookingDto bookingDto) {
 
-        User user = checkUserId(userId);
+        User user = getUserOrThrowException(userId);
         Item item = itemRepository.findByIdAndUser_IdNot(bookingDto.getItemId(), user.getId())
                 .orElseThrow(() -> new DataNotFoundException("Владелец не может арендовать свою вещь"));
 
@@ -47,7 +47,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto approveBooking(long userId, long bookingId, boolean approved) {
-        checkUserId(userId);
+        getUserOrThrowException(userId);
         Booking booking = checkBookingId(bookingId);
         long itemId = booking.getItem().getId();
 
@@ -69,7 +69,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto findById(Long userId, Long bookingId) {
-        checkUserId(userId);
+        getUserOrThrowException(userId);
         Booking booking = checkBookingId(bookingId);
         long itemId = booking.getItem().getId();
         List<Item> items = itemRepository.findByUser_Id(userId);
@@ -82,7 +82,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllBookingsByUser(Long userId, BookingState state) {
-        User user = checkUserId(userId);
+        User user = getUserOrThrowException(userId);
         switch (state) {
             case ALL:
                 return bookingRepository.findAllByBookerOrderByOrderedOnDesc(user)
@@ -116,7 +116,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllBookingsByOwner(Long userId, BookingState state) {
-        checkUserId(userId);
+        getUserOrThrowException(userId);
         List<Item> items = itemRepository.findByUser_Id(userId);
         switch (state) {
             case ALL:
@@ -149,7 +149,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private User checkUserId(long userId) {
+    private User getUserOrThrowException(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("Пользователя не существует. userId:" + userId));
     }
