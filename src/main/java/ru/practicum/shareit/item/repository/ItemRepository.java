@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
+    Optional<Item> findByIdAndUser_Id(long id, long id1);
 
     Optional<Item> findByIdAndUser_IdNot(Long id, Long id1);
 
