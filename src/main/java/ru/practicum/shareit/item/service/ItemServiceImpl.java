@@ -79,13 +79,13 @@ public class ItemServiceImpl implements ItemService {
         itemForUserDto.setComments(commentDtos);
 
         if (Boolean.TRUE.equals(checkIfUserIsOwner(userId, item))) {
-            return findByIdForUser(item, commentDtos);
+            return findItemByIdForUser(item, commentDtos);
         } else {
             return itemForUserDto;
         }
     }
 
-    private ItemForUserDto findByIdForUser(Item item, List<CommentDto> commentDtos) {
+    private ItemForUserDto findItemByIdForUser(Item item, List<CommentDto> commentDtos) {
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByReturnedOnAsc(item, Status.APPROVED);
         if (bookings.isEmpty()) {
@@ -126,7 +126,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemForUserDto> findAllItems(Long userId) {
         userRepository.findById(userId).orElseThrow(DataNotFoundException::new);
         return itemRepository.findAllItemsByUser(userId).stream()
-                .map(item -> findByIdForUser(item, item.getComments()
+                .map(item -> findItemByIdForUser(item, item.getComments()
                         .stream()
                         .map(commentMapper::toDTO)
                         .collect(Collectors.toList())))
