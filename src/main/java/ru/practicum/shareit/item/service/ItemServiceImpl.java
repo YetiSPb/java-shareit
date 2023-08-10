@@ -125,7 +125,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemForUserDto> findAllItems(Long userId) {
         userRepository.findById(userId).orElseThrow(DataNotFoundException::new);
-        return itemRepository.findAllItemsByUser(userId).stream()
+        return itemRepository.findByUser_Id(userId).stream()
                 .map(item -> findItemByIdForUser(item, item.getComments()
                         .stream()
                         .map(commentMapper::toDTO)
