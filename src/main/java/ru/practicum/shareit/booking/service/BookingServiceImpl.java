@@ -117,32 +117,35 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllBookingsByOwner(Long userId, BookingState state) {
+
         getUserOrThrowException(userId);
-        List<Item> items = itemRepository.findByUser_Id(userId);
+
         switch (state) {
             case ALL:
-                return bookingRepository.findAllByItemInOrderByOrderedOnDesc(items)
+                return bookingRepository.findByItem_User_IdOrderByOrderedOnDesc(userId)
                         .stream().map(bookingMapper::toDTO)
                         .collect(Collectors.toList());
             case CURRENT:
-                return bookingRepository.findAllByItemInAndOrderedOnBeforeAndReturnedOnAfterOrderByOrderedOnDesc(items,
+
+                return bookingRepository.findByItem_User_IdAndOrderedOnBeforeAndReturnedOnAfterOrderByOrderedOnDesc(userId,
                                 LocalDateTime.now(), LocalDateTime.now())
                         .stream().map(bookingMapper::toDTO)
                         .collect(Collectors.toList());
             case PAST:
-                return bookingRepository.findAllByItemInAndReturnedOnBeforeOrderByReturnedOnDesc(items, LocalDateTime.now())
+
+                return bookingRepository.findByItem_User_IdAndReturnedOnBeforeOrderByReturnedOnDesc(userId, LocalDateTime.now())
                         .stream().map(bookingMapper::toDTO)
                         .collect(Collectors.toList());
             case FUTURE:
-                return bookingRepository.findAllByItemInAndOrderedOnAfterOrderByOrderedOnDesc(items, LocalDateTime.now())
+                return bookingRepository.findByItem_User_IdAndOrderedOnAfterOrderByOrderedOnDesc(userId, LocalDateTime.now())
                         .stream().map(bookingMapper::toDTO)
                         .collect(Collectors.toList());
             case WAITING:
-                return bookingRepository.findAllByItemInAndStatusEqualsOrderByOrderedOnDesc(items, Status.WAITING)
+                return bookingRepository.findByItem_User_IdAndStatusEqualsOrderByOrderedOnDesc(userId, Status.WAITING)
                         .stream().map(bookingMapper::toDTO)
                         .collect(Collectors.toList());
             case REJECTED:
-                return bookingRepository.findAllByItemInAndStatusEqualsOrderByOrderedOnDesc(items, Status.REJECTED)
+                return bookingRepository.findByItem_User_IdAndStatusEqualsOrderByOrderedOnDesc(userId, Status.REJECTED)
                         .stream().map(bookingMapper::toDTO)
                         .collect(Collectors.toList());
             default:
@@ -153,17 +156,6 @@ public class BookingServiceImpl implements BookingService {
     private User getUserOrThrowException(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("Пользователя не существует. userId:" + userId));
-    }
-
-    private Boolean checkIfUserIsOwner(List<Item> items, long itemId) {
-        boolean isFound = false;
-        for (Item item : items) {
-            if (item.getId() == itemId) {
-                isFound = true;
-                break;
-            }
-        }
-        return isFound;
     }
 
     private Booking checkBookingId(long bookingId) {
