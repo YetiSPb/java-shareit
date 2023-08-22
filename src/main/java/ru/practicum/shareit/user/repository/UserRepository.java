@@ -1,22 +1,14 @@
 package ru.practicum.shareit.user.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.List;
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
 
-public interface UserRepository {
+    @Query("select u from User u where u.email like ?1")
+    void checkDuplicateEmail(String email);
 
-    List<User> findAll();
-
-    User save(User user);
-
-    User findById(long id);
-
-    User partialUpdateUser(User user);
-
-    void deleteUser(User user);
-
-    void checkUserId(Long userId);
-
-    void checkDuplicateEmail(String userEmail);
 }

@@ -1,20 +1,39 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.model.Status;
 
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class BookingDto {
-    private long bookingId;
-    private User booker;
-    private Item item;
-    private LocalDateTime orderedOn;
-    private LocalDateTime returnedOn;
+
+    private long id;
+
+    @NotNull
+    private Long itemId;
+    private Long bookerId;
+
+    @NotNull(message = "Дата начала аренды не может быть пустой")
+    @FutureOrPresent
+    private LocalDateTime start;
+
+    @NotNull(message = "Дата конца аренды не может быть пустой")
+    @FutureOrPresent
+    private LocalDateTime end;
+
+    private BookerDto booker;
+    private BookItemDto item;
+
     private Status status;
+
+    public BookingDto(long id, LocalDateTime start, LocalDateTime end) {
+        this.id = id;
+        this.start = start;
+        this.end = end;
+    }
 }
