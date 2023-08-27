@@ -25,4 +25,6 @@ public class ItemDto {
     private Boolean available;
 
     private Set<Comment> comments;
+
+    private Long requestId;
 }

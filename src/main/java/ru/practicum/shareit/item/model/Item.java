@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -46,6 +47,16 @@ public class Item {
     )
     @ToString.Exclude
     private List<Comment> comments;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "items_requests",
+            joinColumns = {@JoinColumn(name = "item_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "request_id", referencedColumnName = "id")}
+    )
+    @ToString.Exclude
+    private ItemRequest itemRequest;
 
     @Override
     public boolean equals(Object o) {

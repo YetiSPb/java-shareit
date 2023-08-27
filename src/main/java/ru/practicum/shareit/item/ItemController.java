@@ -26,7 +26,12 @@ public class ItemController {
                             @Valid @RequestBody ItemDto itemDto) {
         log.debug("Поступил запрос POST на создание вещи {} от пользователя по id {}",
                 itemDto.toString(), userId);
-        return itemService.saveItem(itemDto, userId);
+
+        if (itemDto.getRequestId() == null) {
+            return itemService.saveItem(itemDto, userId);
+        } else {
+            return itemService.saveItem(itemDto, userId, itemDto.getRequestId());
+        }
     }
 
     @PatchMapping("/{itemId}")

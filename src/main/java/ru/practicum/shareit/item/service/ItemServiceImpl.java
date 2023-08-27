@@ -18,6 +18,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -37,12 +39,22 @@ public class ItemServiceImpl implements ItemService {
     private final CommentMapper commentMapper;
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     public ItemDto saveItem(ItemDto itemDto, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(DataNotFoundException::new);
         Item item = itemMapper.toModel(itemDto, user);
         return itemMapper.toDTO(itemRepository.save(item));
+    }
+
+    @Override
+    public ItemDto saveItem(ItemDto itemDto, Long userId, Long requestId) {
+        User user = userRepository.findById(userId).orElseThrow(DataNotFoundException::new);
+        ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(() ->
+                new DataNotFoundException("Запроса по id " + requestId + " нет в базе данных"));
+        Item item = itemMapper.toModel(itemDto, user, itemRequest);
+        return itemMapper.toDTO(itemRepository.save(item), requestId);
     }
 
     @Override
