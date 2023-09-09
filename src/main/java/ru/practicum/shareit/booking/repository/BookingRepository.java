@@ -13,8 +13,7 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findByItem_User_IdAndOrderedOnBeforeAndReturnedOnAfterOrderByOrderedOnDesc
-            (long id, LocalDateTime orderedOn, LocalDateTime returnedOn, Pageable page);
+    List<Booking> findByItem_User_IdAndOrderedOnBeforeAndReturnedOnAfterOrderByOrderedOnDesc(long id, LocalDateTime orderedOn, LocalDateTime returnedOn, Pageable page);
 
     List<Booking> findByItem_User_IdOrderByOrderedOnDesc(long id, Pageable page);
 
@@ -24,8 +23,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByBookerAndReturnedOnBeforeOrderByReturnedOnDesc(User booker, LocalDateTime end, Pageable page);
 
-    List<Booking> findAllByBookerAndOrderedOnBeforeAndReturnedOnAfterOrderByOrderedOnDesc(User booker, LocalDateTime start,
-                                                                                          LocalDateTime end, Pageable page);
+    List<Booking> findAllByBookerAndOrderedOnBeforeAndReturnedOnAfterOrderByOrderedOnDesc(User booker, LocalDateTime start, LocalDateTime end, Pageable page);
 
     List<Booking> findAllByBookerAndStatusEqualsOrderByOrderedOnDesc(User user, Status status, Pageable page);
 
@@ -38,6 +36,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByItem_User_IdAndOrderedOnAfterOrderByOrderedOnDesc(long bookerId, LocalDateTime now, Pageable page);
 
     List<Booking> findByItem_User_IdAndStatusEqualsOrderByOrderedOnDesc(long bookerId, Status status, Pageable page);
-
 
 }
