@@ -1,9 +1,11 @@
 package ru.practicum.shareit.user.model;
 
 import lombok.*;
+import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -17,8 +19,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @OneToMany
+    @ToString.Exclude
+    private Set<Item> items;
 
     @Override
     public boolean equals(Object o) {

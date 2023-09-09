@@ -97,6 +97,7 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+
     private ItemForUserDto findItemByIdForUser(Item item, List<CommentDto> commentDtos) {
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByReturnedOnAsc(item, Status.APPROVED);

@@ -1,7 +1,9 @@
 package ru.practicum.shareit.booking.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.model.Status;
 
 import javax.validation.constraints.FutureOrPresent;
@@ -9,7 +11,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BookingDto {
 
     private long id;
@@ -27,13 +30,19 @@ public class BookingDto {
     private LocalDateTime end;
 
     private BookerDto booker;
+
     private BookItemDto item;
 
     private Status status;
 
-    public BookingDto(long id, LocalDateTime start, LocalDateTime end) {
+    @JsonCreator
+    public BookingDto(long id, LocalDateTime start, LocalDateTime end, BookerDto booker, BookItemDto item, Status status) {
         this.id = id;
         this.start = start;
         this.end = end;
+        this.booker = booker;
+        this.item = item;
+        this.status = status;
     }
+
 }
