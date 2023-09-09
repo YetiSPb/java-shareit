@@ -2,11 +2,13 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemForUserDto;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.request.repository.OffsetLimitPageable;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -50,18 +52,26 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemForUserDto> findAllItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemForUserDto> findAllItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                             @RequestParam(defaultValue = "0") int from,
+                                             @RequestParam(defaultValue = "20") int size) {
         log.debug("Получен запрос GET на получение вещей пользователя по id {}", userId);
-        return itemService.findAllItems(userId);
+        Pageable page = OffsetLimitPageable.of(from, size);
+        return itemService.findAllItems(userId, page);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam String text, @RequestHeader(value = "Accept", required = false) Optional<String> accept) {
+    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                     @RequestParam String text,
+                                     @RequestHeader(value = "Accept", required = false) Optional<String> accept,
+                                     @RequestParam(defaultValue = "0") int from,
+                                     @RequestParam(defaultValue = "20") int size) {
         log.debug("Получен запрос GET на поиск вещей от пользователя по id {}", userId);
         if (text.equals("")) {
             return new ArrayList<>();
         }
-        return itemService.searchItems(text, accept.isPresent());
+        Pageable page = OffsetLimitPageable.of(from, size);
+        return itemService.searchItems(text, accept.isPresent(), page);
     }
 
     @PostMapping("/{itemId}/comment")

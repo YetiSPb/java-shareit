@@ -46,7 +46,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> findAllOwnRequests(Long userId) {
+    public List<ItemRequestDto> findAllOwnRequests(Long userId, Pageable page) {
         checkUserId(userId);
 
         return itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(userId).stream()

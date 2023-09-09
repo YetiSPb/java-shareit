@@ -2,7 +2,9 @@ package ru.practicum.shareit.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.request.repository.OffsetLimitPageable;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -22,9 +24,11 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
+    public List<UserDto> getAllUsers(@RequestParam(defaultValue = "0") int from,
+                                     @RequestParam(defaultValue = "20") int size) {
         log.debug("Получен запрос GET на получение всех пользователей");
-        return userService.getAllUsers();
+        Pageable page = OffsetLimitPageable.of(from, size);
+        return userService.getAllUsers(page);
     }
 
     @GetMapping("/{id}")

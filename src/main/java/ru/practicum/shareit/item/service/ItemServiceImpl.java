@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookerAndItemDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -136,9 +137,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemForUserDto> findAllItems(Long userId) {
+    public List<ItemForUserDto> findAllItems(Long userId, Pageable page) {
         userRepository.findById(userId).orElseThrow(DataNotFoundException::new);
-        return itemRepository.findByUser_Id(userId).stream()
+        return itemRepository.findByUser_Id(userId, page).stream()
                 .map(item -> findItemByIdForUser(item, item.getComments()
                         .stream()
                         .map(commentMapper::toDTO)
@@ -148,11 +149,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItems(String text, Boolean accept) {
+    public List<ItemDto> searchItems(String text, Boolean accept, Pageable page) {
         List<Item> users;
         if (Boolean.TRUE.equals(accept)) {
             users = itemRepository
-                    .findByDescriptionContainingIgnoreCaseAndAvailable(text, true)
+                    .findByDescriptionContainingIgnoreCaseAndAvailable(text, true, page)
                     .orElseThrow(DataNotFoundException::new);
         } else {
             users = itemRepository.findByDescriptionContainingIgnoreCase(text)
