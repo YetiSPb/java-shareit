@@ -2,9 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.repository.OffsetLimitPageable;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -24,11 +22,9 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers(@RequestParam(defaultValue = "0") int from,
-                                     @RequestParam(defaultValue = "20") int size) {
+    public List<UserDto> findAllUsers() {
         log.debug("Получен запрос GET на получение всех пользователей");
-        Pageable page = OffsetLimitPageable.of(from, size);
-        return userService.getAllUsers(page);
+        return userService.findAllUsers();
     }
 
     @GetMapping("/{id}")
@@ -40,14 +36,14 @@ public class UserController {
     @PostMapping()
     public UserDto saveUser(@Valid @RequestBody UserDto userDto) {
         log.debug("Получен запрос POST на создание пользователя {}", userDto.toString());
-        return userService.save(userDto);
+        return userService.saveUser(userDto);
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@RequestBody UserDto userDto,
-                              @PathVariable(required = false) long id) {
+    public UserDto partialUpdateUser(@RequestBody UserDto userDto,
+                                     @PathVariable(required = false) long id) {
         log.debug("Получен запрос PATCH на обновление пользователя по id {}", id);
-        return userService.updateUser(userDto, id);
+        return userService.partialUpdateUser(userDto, id);
     }
 
     @DeleteMapping("/{id}")

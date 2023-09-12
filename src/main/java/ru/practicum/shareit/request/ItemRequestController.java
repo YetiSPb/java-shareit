@@ -1,11 +1,9 @@
 package ru.practicum.shareit.request;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.repository.OffsetLimitPageable;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 import javax.validation.Valid;
@@ -14,9 +12,13 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping(path = "/requests")
-@RequiredArgsConstructor
 public class ItemRequestController {
     private final ItemRequestService itemRequestService;
+
+    @Autowired
+    public ItemRequestController(ItemRequestService itemRequestService) {
+        this.itemRequestService = itemRequestService;
+    }
 
     @PostMapping()
     public ItemRequestDto addItemRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
@@ -27,12 +29,9 @@ public class ItemRequestController {
     }
 
     @GetMapping()
-    public List<ItemRequestDto> findAllOwnRequests(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                   @RequestParam(defaultValue = "0") int from,
-                                                   @RequestParam(defaultValue = "20") int size) {
+    public List<ItemRequestDto> findAllOwnRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("Поступил GET запрос на получение всех своих запросов пользователя по id {}", userId);
-        Pageable page = OffsetLimitPageable.of(from, size);
-        return itemRequestService.findAllOwnRequests(userId, page);
+        return itemRequestService.findAllOwnRequests(userId);
     }
 
     @GetMapping("/all")

@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.dto.BookerAndItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemForUserDto;
@@ -9,29 +8,58 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
-@Mapper(componentModel = "spring")
-public interface ItemMapper {
+@UtilityClass
+public class ItemMapper {
 
-    ItemDto toDTO(Item item);
+    public ItemDto mapToItemDto(Item item) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.isAvailable())
+                .build();
+    }
 
-    @Mapping(target = "requestId", source = "requestId")
-    ItemDto toDTO(Item item, long requestId);
+    public ItemDto mapToItemDto(Item item, long requestId) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.isAvailable())
+                .requestId(requestId)
+                .build();
+    }
 
-    @Mapping(source = "itemDto.id", target = "id")
-    @Mapping(source = "itemDto.name", target = "name")
-    @Mapping(source = "user", target = "user")
-    Item toModel(ItemDto itemDto, User user);
+    public Item mapToItem(ItemDto itemDto, User user) {
+        return Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .user(user)
+                .build();
+    }
 
-    @Mapping(source = "itemDto.id", target = "id")
-    @Mapping(source = "itemDto.name", target = "name")
-    @Mapping(source = "user", target = "user")
-    @Mapping(source = "itemDto.description", target = "description")
-    @Mapping(target = "itemRequest", source = "itemRequest")
-    Item toModel(ItemDto itemDto, User user, ItemRequest itemRequest);
+    public Item mapToItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
+        return Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .user(user)
+                .itemRequest(itemRequest)
+                .build();
+    }
 
-    @Mapping(source = "item.id", target = "id")
-    ItemForUserDto toItemForUserDto(Item item, BookerAndItemDto lastBooking,
-                                    BookerAndItemDto nextBooking);
-
-
+    public ItemForUserDto mapToItemForUserDto(Item item, BookerAndItemDto lastBooking,
+                                              BookerAndItemDto nextBooking) {
+        return ItemForUserDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.isAvailable())
+                .lastBooking(lastBooking)
+                .nextBooking(nextBooking)
+                .build();
+    }
 }

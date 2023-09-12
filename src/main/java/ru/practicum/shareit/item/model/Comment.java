@@ -24,7 +24,7 @@ public class Comment {
     @Column(name = "text", nullable = false)
     private String comment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "items_comments",
             joinColumns = {@JoinColumn(name = "comment_id", referencedColumnName = "id")},
@@ -33,7 +33,7 @@ public class Comment {
     @ToString.Exclude
     private Item item;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     private User author;

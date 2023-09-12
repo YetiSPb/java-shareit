@@ -6,19 +6,20 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemForUserDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ItemService {
     ItemDto saveItem(ItemDto itemDto, Long userId);
 
-    ItemDto saveItem(ItemDto itemDto, Long userId, Long requestId);
-
-    ItemDto updateItem(ItemDto updates, long itemId, long userId);
+    ItemDto partialUpdateItem(Map<String, Object> updates, long itemId, long userId);
 
     ItemForUserDto findById(long itemId, long userId);
 
     List<ItemForUserDto> findAllItems(Long userId, Pageable page);
 
-    List<ItemDto> searchItems(String text, Boolean accept, Pageable page);
+    List<ItemDto> searchItems(String text, Long userId, Pageable page);
 
     CommentDto addComment(Long userId, Long itemId, CommentDto commentDto);
+
+    ItemDto saveItem(ItemDto itemDto, Long userId, Long requestId);
 }

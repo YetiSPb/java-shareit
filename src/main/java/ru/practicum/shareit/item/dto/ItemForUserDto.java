@@ -25,6 +25,6 @@ public class ItemForUserDto {
     private BookerAndItemDto lastBooking;
 
     private BookerAndItemDto nextBooking;
-
+    @Builder.Default
     private List<CommentDto> comments = new ArrayList<>();
 }

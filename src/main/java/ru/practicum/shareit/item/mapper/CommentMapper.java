@@ -1,22 +1,30 @@
 package ru.practicum.shareit.item.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-@Mapper(componentModel = "spring")
-public interface CommentMapper {
+@UtilityClass
+public class CommentMapper {
 
-    @Mapping(source = "commentDto.id", target = "id")
-    @Mapping(source = "commentDto.text", target = "comment")
-    @Mapping(source = "user", target = "author")
-    Comment toModel(CommentDto commentDto, User user, Item item);
+    public Comment mapToComment(CommentDto commentDto, User user, Item item) {
+        return Comment.builder()
+                .id(commentDto.getId())
+                .comment(commentDto.getText())
+                .author(user)
+                .item(item)
+                .created(commentDto.getCreated())
+                .build();
+    }
 
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "comment.author.name", target = "authorName")
-    @Mapping(source = "comment", target = "text")
-    CommentDto toDTO(Comment comment);
+    public CommentDto mapToCommentDto(Comment comment) {
+        return CommentDto.builder()
+                .id(comment.getId())
+                .authorName(comment.getAuthor().getName())
+                .created(comment.getCreated())
+                .text(comment.getComment())
+                .build();
+    }
 }

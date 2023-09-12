@@ -1,31 +1,48 @@
 package ru.practicum.shareit.booking.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.dto.BookItemDto;
 import ru.practicum.shareit.booking.dto.BookerAndItemDto;
+import ru.practicum.shareit.booking.dto.BookerDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-@Mapper(componentModel = "spring")
-public interface BookingMapper {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class BookingMapper {
 
-    @Mapping(target = "itemId", source = "item.id")
-    @Mapping(target = "bookerId", source = "booker.id")
-    @Mapping(target = "start", source = "orderedOn")
-    @Mapping(target = "end", source = "returnedOn")
-    BookingDto toDTO(Booking booking);
+    public static Booking mapToBooking(BookingDto bookingDto, User user, Item item, Status status) {
+        return Booking.builder()
+                .id(bookingDto.getId())
+                .booker(user)
+                .item(item)
+                .status(status)
+                .start(bookingDto.getStart())
+                .end(bookingDto.getEnd())
+                .build();
+    }
 
-    @Mapping(target = "id", source = "bookingDto.id")
-    @Mapping(target = "booker", source = "booker")
-    @Mapping(target = "item", source = "item")
-    @Mapping(target = "status", source = "status")
-    @Mapping(target = "orderedOn", source = "bookingDto.start")
-    @Mapping(target = "returnedOn", source = "bookingDto.end")
-    Booking toModel(BookingDto bookingDto, User booker, Item item, Status status);
+    public static BookingDto mapToBookingDto(Booking booking) {
+        BookerDto bookerDto = new BookerDto(booking.getBooker().getId());
+        BookItemDto bookItemDto = new BookItemDto(booking.getItem().getId(), booking.getItem().getName());
 
-    @Mapping(target = "bookerId", source = "booking.booker.id")
-    BookerAndItemDto toBookerAndItemDto(Booking booking);
+        return BookingDto.builder()
+                .id(booking.getId())
+                .booker(bookerDto)
+                .item(bookItemDto)
+                .start(booking.getStart())
+                .end(booking.getEnd())
+                .status(booking.getStatus())
+                .build();
+    }
+
+    public static BookerAndItemDto mapToBookerAndItemDto(Booking booking) {
+        return BookerAndItemDto.builder()
+                .id(booking.getId())
+                .bookerId(booking.getBooker().getId())
+                .build();
+    }
 }

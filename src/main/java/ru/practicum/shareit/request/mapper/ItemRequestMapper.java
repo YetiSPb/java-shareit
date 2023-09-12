@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request.mapper;
 
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -12,12 +11,8 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-@Component
-@AllArgsConstructor
+@UtilityClass
 public class ItemRequestMapper {
-
-    private final ItemMapper itemMapper;
 
     public ItemRequest mapToItemRequest(ItemRequestDto itemRequestDto, User user) {
         ItemRequest request = ItemRequest.builder()
@@ -28,7 +23,7 @@ public class ItemRequestMapper {
                 .build();
 
         List<Item> items = itemRequestDto.getItems().stream()
-                .map(itemDto -> itemMapper.toModel(itemDto, user, request))
+                .map(itemDto -> ItemMapper.mapToItem(itemDto, user, request))
                 .collect(Collectors.toList());
         request.setItems(items);
 
@@ -37,7 +32,7 @@ public class ItemRequestMapper {
 
     public ItemRequestDto mapToItemRequestDto(ItemRequest itemRequest) {
         List<ItemDto> dtos = itemRequest.getItems().stream()
-                .map(item -> itemMapper.toDTO(item, itemRequest.getId()))
+                .map(item -> ItemMapper.mapToItemDto(item, itemRequest.getId()))
                 .collect(Collectors.toList());
 
         return ItemRequestDto.builder()

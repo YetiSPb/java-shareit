@@ -13,28 +13,32 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findByItem_User_IdAndOrderedOnBeforeAndReturnedOnAfterOrderByOrderedOnDesc(long id, LocalDateTime orderedOn, LocalDateTime returnedOn, Pageable page);
 
-    List<Booking> findByItem_User_IdOrderByOrderedOnDesc(long id, Pageable page);
+    Booking findById(long id);
 
-    List<Booking> findAllByBookerOrderByOrderedOnDesc(User booker, Pageable page);
+    List<Booking> findAllByBookerOrderByStartDesc(User booker, Pageable page);
 
-    List<Booking> findAllByBookerAndOrderedOnAfterOrderByOrderedOnDesc(User booker, LocalDateTime start, Pageable page);
+    List<Booking> findAllByBookerAndStartAfterOrderByStartDesc(User booker, LocalDateTime start, Pageable page);
 
-    List<Booking> findAllByBookerAndReturnedOnBeforeOrderByReturnedOnDesc(User booker, LocalDateTime end, Pageable page);
+    List<Booking> findAllByBookerAndEndBeforeOrderByEndDesc(User booker, LocalDateTime end, Pageable page);
 
-    List<Booking> findAllByBookerAndOrderedOnBeforeAndReturnedOnAfterOrderByOrderedOnDesc(User booker, LocalDateTime start, LocalDateTime end, Pageable page);
+    List<Booking> findAllByBookerAndStartBeforeAndEndAfterOrderByStartDesc(User booker, LocalDateTime start,
+                                                                           LocalDateTime end, Pageable page);
 
-    List<Booking> findAllByBookerAndStatusEqualsOrderByOrderedOnDesc(User user, Status status, Pageable page);
+    List<Booking> findAllByBookerAndStatusEqualsOrderByStartDesc(User user, Status status, Pageable page);
 
-    List<Booking> findAllByItemAndStatusOrderByReturnedOnAsc(Item item, Status status);
+    List<Booking> findByBookerIdAndItemIdAndEndBeforeOrderByEndDesc(long bookerId, long itemId, LocalDateTime end);
 
-    List<Booking> findByBookerIdAndItemIdAndReturnedOnBeforeOrderByReturnedOnDesc(long bookerId, long itemId, LocalDateTime end);
+    List<Booking> findAllByItemInOrderByStartDesc(List<Item> item, Pageable page);
 
-    List<Booking> findByItem_User_IdAndReturnedOnBeforeOrderByReturnedOnDesc(long bookerId, LocalDateTime now, Pageable page);
+    List<Booking> findAllByItemInAndStartBeforeAndEndAfterOrderByStartDesc(List<Item> items, LocalDateTime now,
+                                                                           LocalDateTime now1, Pageable page);
 
-    List<Booking> findByItem_User_IdAndOrderedOnAfterOrderByOrderedOnDesc(long bookerId, LocalDateTime now, Pageable page);
+    List<Booking> findAllByItemInAndEndBeforeOrderByEndDesc(List<Item> items, LocalDateTime now, Pageable page);
 
-    List<Booking> findByItem_User_IdAndStatusEqualsOrderByOrderedOnDesc(long bookerId, Status status, Pageable page);
+    List<Booking> findAllByItemInAndStartAfterOrderByStartDesc(List<Item> items, LocalDateTime now, Pageable page);
 
+    List<Booking> findAllByItemInAndStatusEqualsOrderByStartDesc(List<Item> items, Status status, Pageable page);
+
+    List<Booking> findAllByItemAndStatusOrderByEndAsc(Item item, Status status);
 }

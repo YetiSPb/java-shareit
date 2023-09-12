@@ -1,6 +1,6 @@
 package ru.practicum.shareit.request.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,18 +18,23 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
 @Service
-@RequiredArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
-    private final ItemRequestMapper itemRequestMapper;
+
+    @Autowired
+    public ItemRequestServiceImpl(ItemRequestRepository itemRequestRepository, UserRepository userRepository,
+                                  ItemRepository itemRepository) {
+        this.itemRequestRepository = itemRequestRepository;
+        this.userRepository = userRepository;
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public ItemRequestDto addItemRequest(Long userId, ItemRequestDto dto) {
@@ -39,18 +44,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         dto.setCreated(now);
         List<Item> items = new ArrayList<>(itemRepository.findAllByItemRequestId(dto.getId()));
 
-        ItemRequest itemRequest = itemRequestMapper.mapToItemRequest(dto, user);
+        ItemRequest itemRequest = ItemRequestMapper.mapToItemRequest(dto, user);
         itemRequest.setItems(items);
 
-        return itemRequestMapper.mapToItemRequestDto(itemRequestRepository.save(itemRequest));
+        return ItemRequestMapper.mapToItemRequestDto(itemRequestRepository.save(itemRequest));
     }
 
     @Override
-    public List<ItemRequestDto> findAllOwnRequests(Long userId, Pageable page) {
+    public List<ItemRequestDto> findAllOwnRequests(Long userId) {
         checkUserId(userId);
 
         return itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(userId).stream()
-                .map(itemRequestMapper::mapToItemRequestDto)
+                .map(ItemRequestMapper::mapToItemRequestDto)
                 .collect(toList());
     }
 
@@ -62,7 +67,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
 
         return itemRequestRepository.findAllByRequesterIdIsNot(userId, page).stream()
-                .map(itemRequestMapper::mapToItemRequestDto)
+                .map(ItemRequestMapper::mapToItemRequestDto)
                 .collect(toList());
     }
 
@@ -72,16 +77,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         ItemRequest itemRequest = checkItemRequestId(requestId);
         List<Item> items = new ArrayList<>(itemRepository.findAllByItemRequestId(requestId));
         itemRequest.setItems(items);
-        return itemRequestMapper.mapToItemRequestDto(itemRequest);
+        return ItemRequestMapper.mapToItemRequestDto(itemRequest);
     }
 
     private User checkUserId(long userId) {
-        Optional<User> user = userRepository.findById(userId);
+        User user = userRepository.findById(userId);
 
-        if (!user.isPresent()) {
+        if (user == null) {
             throw new DataNotFoundException("Пользователя с id " + userId + " нет в базе данных");
         }
-        return user.get();
+        return user;
     }
 
     private ItemRequest checkItemRequestId(long id) {

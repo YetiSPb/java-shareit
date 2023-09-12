@@ -19,7 +19,6 @@ public class BookingDto {
 
     @NotNull
     private Long itemId;
-    private Long bookerId;
 
     @NotNull(message = "Дата начала аренды не может быть пустой")
     @FutureOrPresent
@@ -44,5 +43,4 @@ public class BookingDto {
         this.item = item;
         this.status = status;
     }
-
 }

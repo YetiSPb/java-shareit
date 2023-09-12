@@ -19,6 +19,7 @@ import java.util.Objects;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
 
     @Column(name = "name", nullable = false)
@@ -39,7 +40,7 @@ public class Item {
     @Column(name = "available", nullable = false)
     private boolean available;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "items_comments",
             joinColumns = {@JoinColumn(name = "item_id", referencedColumnName = "id")},
@@ -47,7 +48,6 @@ public class Item {
     )
     @ToString.Exclude
     private List<Comment> comments;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(

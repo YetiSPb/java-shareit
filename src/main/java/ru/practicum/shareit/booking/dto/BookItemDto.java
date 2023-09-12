@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class BookItemDto {
 
     private long id;
+
     private String name;
 }
