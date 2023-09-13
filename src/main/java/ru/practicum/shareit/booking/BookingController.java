@@ -40,7 +40,7 @@ public class BookingController {
 
     @PatchMapping("{bookingId}")
     public BookingDto approveBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @PathVariable(required = false) Long bookingId,
+                                     @PathVariable Long bookingId,
                                      @RequestParam Boolean approved) {
         log.debug("Поступил запрос PATCH на одобрение брони от пользователя по id {} на бронь по id {}",
                 userId, bookingId);
