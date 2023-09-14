@@ -158,39 +158,39 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private ItemForUserDto updateUserInfoById(Item item, List<CommentDto> commentDtos) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nowDateTime = LocalDateTime.now();
         List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByEndAsc(item, Status.APPROVED);
         if (bookings.isEmpty()) {
-            ItemForUserDto i1 = ItemMapper.mapToItemForUserDto(item, null, null);
-            i1.setComments(commentDtos);
-            return i1;
+            ItemForUserDto itemForUserDto = ItemMapper.mapToItemForUserDto(item, null, null);
+            itemForUserDto.setComments(commentDtos);
+            return itemForUserDto;
         } else if (bookings.size() == 1) {
             Booking booking = bookings.get(0);
             BookerAndItemDto bookerAndItemDto = BookingMapper.mapToBookerAndItemDto(booking);
-            ItemForUserDto i1 = ItemMapper.mapToItemForUserDto(item, bookerAndItemDto, null);
-            i1.setComments(commentDtos);
-            return i1;
+            ItemForUserDto itemForUserDto = ItemMapper.mapToItemForUserDto(item, bookerAndItemDto, null);
+            itemForUserDto.setComments(commentDtos);
+            return itemForUserDto;
         } else {
-            Booking b1 = bookings.get(0); // берем минимальный
-            Booking b2 = bookings.get(bookings.size() - 1); // и максимальный
+            Booking bookingMin = bookings.get(0); // берем минимальный
+            Booking bookingMax = bookings.get(bookings.size() - 1); // и максимальный
 
             for (Booking booking : bookings) {
-                if (booking.getEnd().isBefore(now)) {
-                    if (booking.getEnd().isAfter(b1.getEnd())) { // если он до наст времени, но позже минимального
-                        b1 = booking; // это будет наш ласт
+                if (booking.getEnd().isBefore(nowDateTime)) {
+                    if (booking.getEnd().isAfter(bookingMin.getEnd())) { // если он до наст времени, но позже минимального
+                        bookingMin = booking; // это будет наш ласт
                     }
                 }
-                if (booking.getStart().isAfter(now)) {
-                    if (booking.getEnd().isBefore(b2.getEnd())) {
-                        b2 = booking; // наш некст
+                if (booking.getStart().isAfter(nowDateTime)) {
+                    if (booking.getEnd().isBefore(bookingMax.getEnd())) {
+                        bookingMax = booking; // наш некст
                     }
                 }
             }
-            BookerAndItemDto last = BookingMapper.mapToBookerAndItemDto(b1);
-            BookerAndItemDto next = BookingMapper.mapToBookerAndItemDto(b2);
-            ItemForUserDto i1 = ItemMapper.mapToItemForUserDto(item, last, next);
-            i1.setComments(commentDtos);
-            return i1;
+            BookerAndItemDto lastBookerAndItemDto = BookingMapper.mapToBookerAndItemDto(bookingMin);
+            BookerAndItemDto nextBookerAndItemDto = BookingMapper.mapToBookerAndItemDto(bookingMax);
+            ItemForUserDto itemForUserDto = ItemMapper.mapToItemForUserDto(item, lastBookerAndItemDto, nextBookerAndItemDto);
+            itemForUserDto.setComments(commentDtos);
+            return itemForUserDto;
         }
     }
 
