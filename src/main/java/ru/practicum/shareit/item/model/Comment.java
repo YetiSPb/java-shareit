@@ -33,7 +33,7 @@ public class Comment {
     @ToString.Exclude
     private Item item;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     private User author;
