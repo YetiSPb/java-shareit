@@ -79,7 +79,7 @@ public class ItemServiceImpl implements ItemService {
         itemForUserDto.setComments(commentDtos);
 
         if (checkIfUserIsOwner(userId, item)) {
-            return findByIdForUser(item, commentDtos);
+            return updateUserInfoById(item, commentDtos);
         } else {
             return itemForUserDto;
         }
@@ -89,7 +89,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemForUserDto> findAllItems(Long userId, Pageable page) {
         checkUserId(userId);
         return itemRepository.findAllItemsByUserId(userId, page).stream()
-                .map(item -> findByIdForUser(item, item.getComments()
+                .map(item -> updateUserInfoById(item, item.getComments()
                         .stream()
                         .map(CommentMapper::mapToCommentDto)
                         .collect(Collectors.toList())))
@@ -157,7 +157,7 @@ public class ItemServiceImpl implements ItemService {
         return item;
     }
 
-    private ItemForUserDto findByIdForUser(Item item, List<CommentDto> commentDtos) {
+    private ItemForUserDto updateUserInfoById(Item item, List<CommentDto> commentDtos) {
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByEndAsc(item, Status.APPROVED);
         if (bookings == null || bookings.size() == 0) {
