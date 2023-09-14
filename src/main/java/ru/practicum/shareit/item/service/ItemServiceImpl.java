@@ -160,7 +160,7 @@ public class ItemServiceImpl implements ItemService {
     private ItemForUserDto updateUserInfoById(Item item, List<CommentDto> commentDtos) {
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByEndAsc(item, Status.APPROVED);
-        if (bookings == null || bookings.size() == 0) {
+        if (bookings.isEmpty()) {
             ItemForUserDto i1 = ItemMapper.mapToItemForUserDto(item, null, null);
             i1.setComments(commentDtos);
             return i1;
