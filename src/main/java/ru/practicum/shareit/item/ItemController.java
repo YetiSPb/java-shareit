@@ -79,7 +79,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
                                  @Valid @RequestBody CommentDto commentDto,
-                                 @PathVariable(required = false) Long itemId) {
+                                 @PathVariable Long itemId) {
         log.debug("Получен запрос GET на получение комментариев для вещи по id {} от пользователя по id {}",
                 itemId, userId);
         return itemService.addComment(userId, itemId, commentDto);

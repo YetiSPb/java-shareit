@@ -27,18 +27,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 class BookingRepositoryTest {
 
-    private final Pageable page = PageRequest.of(0, 10);
-    private final LocalDateTime now =
-            LocalDateTime.of(2023, Month.AUGUST, 4, 15, 16, 1);
     @Autowired
     private BookingRepository bookingRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private ItemRepository itemRepository;
+
     private Item item;
     private User requester;
     private Booking booking;
+    private final Pageable page = PageRequest.of(0, 10);
+    private final LocalDateTime now =
+            LocalDateTime.of(2023, Month.AUGUST, 4, 15, 16, 1);
 
     @BeforeEach
     void setUp() {

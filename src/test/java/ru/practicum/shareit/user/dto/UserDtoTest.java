@@ -17,9 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JsonTest
 class UserDtoTest {
 
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     @Autowired
     private JacksonTester<UserDto> jacksonTester;
+
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
     void createSuccessfulWhenValid() throws IOException {

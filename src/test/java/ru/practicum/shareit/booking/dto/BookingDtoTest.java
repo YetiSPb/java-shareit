@@ -19,11 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JsonTest
 class BookingDtoTest {
 
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-    private final LocalDateTime now =
-            LocalDateTime.of(2023, Month.SEPTEMBER, 4, 15, 16, 1);
     @Autowired
     private JacksonTester<BookingDto> jacksonTester;
+
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+    private final LocalDateTime now =
+            LocalDateTime.of(2023, Month.SEPTEMBER, 4, 15, 16, 1);
 
     @Test
     void testNotNullItemIdSuccessful() throws IOException {

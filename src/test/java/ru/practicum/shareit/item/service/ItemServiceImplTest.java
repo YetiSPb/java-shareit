@@ -44,20 +44,24 @@ import static org.mockito.Mockito.*;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class ItemServiceImplTest {
 
-    private final LocalDateTime date =
-            LocalDateTime.of(2023, Month.AUGUST, 4, 15, 16, 1);
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private ItemRequestRepository itemRequestRepository;
+
     @Mock
     private ItemRepository itemRepository;
+
     @Mock
     private BookingRepository bookingRepository;
+
     @Mock
     private CommentRepository commentRepository;
+
     @InjectMocks
     private ItemServiceImpl service;
+
     private User requester;
     private User owner = new User();
     private ItemRequest itemRequest = new ItemRequest();
@@ -66,6 +70,8 @@ class ItemServiceImplTest {
     private Item item = new Item();
     private long requesterId;
     private long ownerId;
+    private final LocalDateTime date =
+            LocalDateTime.of(2023, Month.AUGUST, 4, 15, 16, 1);
 
     @BeforeEach
     void setUp() {

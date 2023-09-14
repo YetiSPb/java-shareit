@@ -23,12 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookingMapperTest {
 
-    private final LocalDateTime date =
-            LocalDateTime.of(2023, Month.AUGUST, 4, 15, 16, 1);
     private BookingDto dto;
     private Booking booking;
     private User requester;
     private Item item = new Item();
+
+    private final LocalDateTime date =
+            LocalDateTime.of(2023, Month.AUGUST, 4, 15, 16, 1);
 
     @BeforeEach
     void setUp() {
