@@ -45,10 +45,11 @@ public class BookingServiceImpl implements BookingService {
         checkUserId(userId);
         Booking booking = checkBookingId(bookingId);
         long itemId = booking.getItem().getId();
-        List<Item> items = itemRepository.findAllItemsByUser(userId);
-        if (!checkIfUserIsOwner(items, itemId)) {
-            throw new DataNotFoundException("Пользователь с id " + userId + " не владелей вещи по id " + itemId);
+
+        if (!itemRepository.findByIdAndUser_Id(itemId, userId).isPresent()) {
+            throw new DataNotFoundException("Пользователь с id " + userId + " не владелец вещи по id " + itemId);
         }
+
         if (booking.getStatus().equals(Status.APPROVED)) {
             throw new ValidationException("Бронь по id " + bookingId + " уже одобрена");
         }
@@ -65,11 +66,12 @@ public class BookingServiceImpl implements BookingService {
         checkUserId(userId);
         Booking booking = checkBookingId(bookingId);
         long itemId = booking.getItem().getId();
-        List<Item> items = itemRepository.findAllItemsByUser(userId);
-        if (!checkIfUserIsOwner(items, itemId) && userId != booking.getBooker().getId()) {
-            throw new DataNotFoundException("Пользователь с id " + userId + " не владелей или не бронировал " +
+
+        if (!itemRepository.findByIdAndUser_Id(itemId, userId).isPresent() && userId != booking.getBooker().getId()) {
+            throw new DataNotFoundException("Пользователь с id " + userId + " не владелец или не бронировал " +
                     "вещь по id " + itemId);
         }
+
         return BookingMapper.mapToBookingDto(booking);
     }
 
