@@ -190,14 +190,10 @@ class BookingServiceImplTest {
 
         assertThat(actualBooking.getStatus(), is(booking.getStatus()));
 
-        verify(bookingRepository, times(1))
-                .save(any(Booking.class));
-        verify(bookingRepository, times(1))
-                .findById(booking.getId());
-        verify(userRepository, times(1))
-                .findById(ownerId);
-        verify(itemRepository, times(1))
-                .findAllItemsByUser(ownerId);
+        verify(bookingRepository, times(1)).save(any(Booking.class));
+        verify(bookingRepository, times(1)).findById(booking.getId());
+        verify(userRepository, times(1)).findById(ownerId);
+        verify(itemRepository, times(1)).findAllItemsByUser(ownerId);
     }
 
     @Test
@@ -233,17 +229,12 @@ class BookingServiceImplTest {
         when(itemRepository.findAllItemsByUser(ownerId)).thenReturn(List.of(item));
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
 
-        assertThrows(ValidationException.class,
-                () -> service.approveBooking(ownerId, booking.getId(), false));
+        assertThrows(ValidationException.class, () -> service.approveBooking(ownerId, booking.getId(), false));
 
-        verify(bookingRepository, never())
-                .save(any(Booking.class));
-        verify(bookingRepository, times(1))
-                .findById(booking.getId());
-        verify(userRepository, times(1))
-                .findById(ownerId);
-        verify(itemRepository, times(1))
-                .findAllItemsByUser(ownerId);
+        verify(bookingRepository, never()).save(any(Booking.class));
+        verify(bookingRepository, times(1)).findById(booking.getId());
+        verify(userRepository, times(1)).findById(ownerId);
+        verify(itemRepository, times(1)).findAllItemsByUser(ownerId);
     }
 
     @Test
@@ -259,12 +250,9 @@ class BookingServiceImplTest {
         assertThat(actualBooking.getEnd(), is(dto.getEnd()));
         assertThat(actualBooking.getStatus(), is(dto.getStatus()));
 
-        verify(bookingRepository, times(1))
-                .findById(booking.getId());
-        verify(userRepository, times(1))
-                .findById(ownerId);
-        verify(itemRepository, times(1))
-                .findAllItemsByUser(ownerId);
+        verify(bookingRepository, times(1)).findById(booking.getId());
+        verify(userRepository, times(1)).findById(ownerId);
+        verify(itemRepository, times(1)).findAllItemsByUser(ownerId);
     }
 
     @Test
