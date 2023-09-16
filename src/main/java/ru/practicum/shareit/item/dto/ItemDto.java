@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Comment;
 
 import javax.validation.constraints.NotBlank;
@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class ItemDto {
     private long id;
 
@@ -25,4 +25,6 @@ public class ItemDto {
     private Boolean available;
 
     private Set<Comment> comments;
+
+    private Long requestId;
 }

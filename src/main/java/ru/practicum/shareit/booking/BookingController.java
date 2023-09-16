@@ -1,31 +1,39 @@
 package ru.practicum.shareit.booking;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.UnsupportedStatusException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.request.repository.OffsetLimitPageable;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@Slf4j
+
 @RestController
-@AllArgsConstructor
+@Slf4j
 @RequestMapping(path = "/bookings")
 public class BookingController {
 
-    BookingService bookingService;
+    private final BookingService bookingService;
 
-    @PostMapping
-    BookingDto addBooking(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody BookingDto bookingDto) {
-        log.debug("POST запрос на создание брони для вещи по id {}", bookingDto.getItemId());
+    @Autowired
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
+
+    @PostMapping()
+    public BookingDto addBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                 @Valid @RequestBody BookingDto bookingDto) {
+        log.debug("Поступил POST запрос на создание брони для вещи по id {}", bookingDto.getItemId());
         if (bookingDto.getStart().isAfter(bookingDto.getEnd())
                 || bookingDto.getStart().equals(bookingDto.getEnd())) {
-            throw new ValidationException("Время начала аренды позже или равно окончанию аренды");
+            throw new ValidationException("Время открытия аренды не может быть позже или равно сдачи вещи");
         }
         return bookingService.addBooking(userId, bookingDto);
     }
@@ -49,19 +57,25 @@ public class BookingController {
 
     @GetMapping()
     public List<BookingDto> findAllBookingsByUser(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                  @RequestParam(defaultValue = "ALL") String state) {
+                                                  @RequestParam(defaultValue = "ALL") String state,
+                                                  @RequestParam(defaultValue = "0") int from,
+                                                  @RequestParam(defaultValue = "20") int size) {
         log.debug("Поступил запрос GET на получение всех бронирований с параметром {}", state);
         BookingState status = BookingState.from(state)
                 .orElseThrow(() -> new UnsupportedStatusException("Unknown state: " + state));
-        return bookingService.findAllBookingsByUser(userId, status);
+        Pageable page = OffsetLimitPageable.of(from, size);
+        return bookingService.findAllBookingsByUser(userId, status, page);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> findAllBookingsByOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                   @RequestParam(defaultValue = "ALL") String state) {
+                                                   @RequestParam(defaultValue = "ALL") String state,
+                                                   @RequestParam(defaultValue = "0") int from,
+                                                   @RequestParam(defaultValue = "20") int size) {
         log.debug("Поступил запрос GET на получение всех бронирований владельца с параметром {}", state);
         BookingState status = BookingState.from(state)
                 .orElseThrow(() -> new UnsupportedStatusException("Unknown state: " + state));
-        return bookingService.findAllBookingsByOwner(userId, status);
+        Pageable page = OffsetLimitPageable.of(from, size);
+        return bookingService.findAllBookingsByOwner(userId, status, page);
     }
 }

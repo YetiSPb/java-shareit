@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -11,30 +13,38 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
-@Slf4j
 @RestController
 @RequestMapping("/items")
-@AllArgsConstructor
+@Slf4j
 public class ItemController {
 
     private final ItemService itemService;
+
+    @Autowired
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
+    }
 
     @PostMapping
     public ItemDto saveItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                             @Valid @RequestBody ItemDto itemDto) {
         log.debug("Поступил запрос POST на создание вещи {} от пользователя по id {}",
                 itemDto.toString(), userId);
-        return itemService.saveItem(itemDto, userId);
+        if (itemDto.getRequestId() == null) {
+            return itemService.saveItem(itemDto, userId);
+        } else {
+            return itemService.saveItem(itemDto, userId, itemDto.getRequestId());
+        }
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                              @RequestBody ItemDto updates,
-                              @PathVariable(required = false) Long itemId) {
+    public ItemDto partialUpdateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                     @RequestBody Map<String, Object> updates,
+                                     @PathVariable(required = false) Long itemId) {
         log.debug("Получен запрос PATCH на обновление вещи по id {}", itemId);
-        return itemService.updateItem(updates, itemId, userId);
+        return itemService.partialUpdateItem(updates, itemId, userId);
     }
 
     @GetMapping("/{itemId}")
@@ -45,18 +55,25 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemForUserDto> findAllItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemForUserDto> findAllItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                             @RequestParam(defaultValue = "0") int from,
+                                             @RequestParam(defaultValue = "20") int size) {
         log.debug("Получен запрос GET на получение вещей пользователя по id {}", userId);
-        return itemService.findAllItems(userId);
+        Pageable page = PageRequest.of(from, size);
+        return itemService.findAllItems(userId, page);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam String text, @RequestHeader(value = "Accept", required = false) Optional<String> accept) {
+    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                     @RequestParam String text,
+                                     @RequestParam(defaultValue = "0") int from,
+                                     @RequestParam(defaultValue = "20") int size) {
         log.debug("Получен запрос GET на поиск вещей от пользователя по id {}", userId);
-        if (text.equals("")) {
+        if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemService.searchItems(text, accept.isPresent());
+        Pageable page = PageRequest.of(from, size);
+        return itemService.searchItems(text.toLowerCase(), userId, page);
     }
 
     @PostMapping("/{itemId}/comment")

@@ -8,12 +8,13 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
+@Entity
 @Table(name = "bookings")
 public class Booking {
     @Id
@@ -29,10 +30,10 @@ public class Booking {
     private Item item;
 
     @Column(name = "start_date")
-    private LocalDateTime orderedOn;
+    private LocalDateTime start;
 
     @Column(name = "end_date")
-    private LocalDateTime returnedOn;
+    private LocalDateTime end;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -42,11 +43,16 @@ public class Booking {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Booking booking = (Booking) o;
-        return id == booking.id && Objects.equals(booker, booking.booker) && Objects.equals(item, booking.item) && Objects.equals(orderedOn, booking.orderedOn) && Objects.equals(returnedOn, booking.returnedOn) && status == booking.status;
+        return id == booking.id
+                && Objects.equals(booker, booking.booker)
+                && Objects.equals(item, booking.item)
+                && Objects.equals(start, booking.start)
+                && Objects.equals(end, booking.end)
+                && status == booking.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, booker, item, orderedOn, returnedOn, status);
+        return Objects.hash(id, booker, item, start, end, status);
     }
 }
